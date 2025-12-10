@@ -8,7 +8,6 @@ showLoader,
 hideLoader,
 showLoadMoreButton,
 hideLoadMoreButton,
-lightbox,
 } from './js/render-functions';
 
 import { getImagesByQuery } from './js/pixabay-api';
@@ -27,7 +26,12 @@ async function onSearch(event) {
 event.preventDefault();
 
 query = event.target.elements['search-text'].value.trim();
-if (!query) return;
+if (!query) {
+iziToast.error({
+    message: 'Please enter a search query!',
+});
+return;
+}
 
 page = 1;
 clearGallery();
@@ -39,10 +43,11 @@ try {
     totalHits = data.totalHits;
 
     if (data.hits.length === 0) {
+    hideLoader();
     iziToast.error({
         message: 'Sorry, there are no images matching your search query. Please try again!',
     });
-return;
+    return;
 }
 
 createGallery(data.hits);
